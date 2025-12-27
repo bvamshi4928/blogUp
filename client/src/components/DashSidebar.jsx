@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signoutSuccess } from "../redux/user/userSlice";
 
-const DashSidebar = () => {
+const DashSidebar = ({ onClose }) => {
   const location = useLocation();
   const [tab, setTab] = useState("");
   const dispatch = useDispatch();
@@ -41,11 +41,11 @@ const DashSidebar = () => {
     }
   };
   return (
-    <Sidebar className="w-full md:w-56">
+    <Sidebar className="w-full h-full">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
         {currentUser && currentUser.isAdmin && (
-            <Link to='/dashboard?tab=dash'>
+            <Link to='/dashboard?tab=dash' onClick={onClose}>
               <Sidebar.Item
                 active={tab === 'dash' || !tab}
                 icon={HiChartPie}
@@ -55,7 +55,7 @@ const DashSidebar = () => {
               </Sidebar.Item>
             </Link>
           )}
-          <Link to="/dashboard?tab=profile">
+          <Link to="/dashboard?tab=profile" onClick={onClose}>
             <Sidebar.Item
               active={tab === "profile"}
               icon={HiUser}
@@ -67,7 +67,7 @@ const DashSidebar = () => {
             </Sidebar.Item>
           </Link>
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=posts">
+            <Link to="/dashboard?tab=posts" onClick={onClose}>
               <Sidebar.Item
                 active={tab === "posts"}
                 icon={HiDocumentText}
@@ -79,7 +79,7 @@ const DashSidebar = () => {
           )}
            {currentUser.isAdmin && (
             <>
-            <Link to='/dashboard?tab=users'>
+            <Link to='/dashboard?tab=users' onClick={onClose}>
               <Sidebar.Item
                 active={tab === 'users'}
                 icon={HiOutlineUserGroup}
@@ -88,7 +88,7 @@ const DashSidebar = () => {
                 Users
               </Sidebar.Item>
             </Link>
-            <Link to='/dashboard?tab=comments'>
+            <Link to='/dashboard?tab=comments' onClick={onClose}>
               <Sidebar.Item
                 active={tab === 'comments'}
                 icon={HiAnnotation}

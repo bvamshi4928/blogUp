@@ -113,80 +113,105 @@ export default function CommentSection({ postId }) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto w-full p-3">
+    <div className="w-full">
+      {/* Section Header */}
+      <div className="mb-8">
+        <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+          Comments
+        </h3>
+        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+          <span className="text-lg font-semibold">{comments.length}</span>
+          <span>{comments.length === 1 ? "comment" : "comments"}</span>
+        </div>
+      </div>
+
+      {/* Comment Form */}
       {currentUser ? (
-        <div className="flex items-center gap-1 my-5 text-gray-500 text-sm">
-          <p>Signed in as:</p>
-          <img
-            className="h-5 w-5 object-cover rounded-full"
-            src={currentUser.profilePicture}
-            alt=""
-          />
-          <Link
-            to={"/dashboard?tab=profile"}
-            className="text-xs text-cyan-600 hover:underline"
-          >
-            @{currentUser.username}
-          </Link>
-        </div>
-      ) : (
-        <div className="text-sm text-teal-500 my-5 flex gap-1">
-          You must be signed in to comment.
-          <Link className="text-blue-500 hover:underline" to={"/sign-in"}>
-            Sign In
-          </Link>
-        </div>
-      )}
-      {currentUser && (
-        <form
-          onSubmit={handleSubmit}
-          className="border border-teal-500 rounded-md p-3"
-        >
-          <Textarea
-            placeholder="Add a comment..."
-            rows="3"
-            maxLength="200"
-            onChange={(e) => setComment(e.target.value)}
-            value={comment}
-          />
-          <div className="flex justify-between items-center mt-5">
-            <p className="text-gray-500 text-xs">
-              {200 - comment.length} characters remaining
-            </p>
-            <Button outline gradientDuoTone="purpleToBlue" type="submit">
-              Submit
-            </Button>
-          </div>
-          {commentError && (
-            <Alert color="failure" className="mt-5">
-              {commentError}
-            </Alert>
-          )}
-        </form>
-      )}
-      {comments.length === 0 ? (
-        <p className="text-sm my-5">No comments yet!</p>
-      ) : (
-        <>
-          <div className="text-sm my-5 flex items-center gap-1">
-            <p>Comments</p>
-            <div className="border border-gray-400 py-1 px-2 rounded-sm">
-              <p>{comments.length}</p>
+        <div className="mb-8 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-slate-700 rounded-xl border border-indigo-200 dark:border-slate-600">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              className="h-10 w-10 object-cover rounded-full border-2 border-indigo-500"
+              src={currentUser.profilePicture}
+              alt={currentUser.username}
+            />
+            <div>
+              <Link
+                to={"/dashboard?tab=profile"}
+                className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                @{currentUser.username}
+              </Link>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Share your thoughts
+              </p>
             </div>
           </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Textarea
+              placeholder="Write a comment..."
+              rows="4"
+              maxLength="200"
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+              className="bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+            />
+            <div className="flex justify-between items-center">
+              <p className={`text-xs ${
+                comment.length > 180 ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'
+              }`}>
+                {200 - comment.length} characters remaining
+              </p>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200 transform hover:scale-105"
+                disabled={!comment.trim()}
+              >
+                Post Comment
+              </Button>
+            </div>
+            {commentError && (
+              <Alert color="failure" className="mt-4">
+                {commentError}
+              </Alert>
+            )}
+          </form>
+        </div>
+      ) : (
+        <div className="mb-8 p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+          <p className="text-gray-700 dark:text-gray-300 mb-2">
+            You must be signed in to comment.
+          </p>
+          <Link
+            to={"/sign-in"}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200"
+          >
+            Sign In to Comment
+          </Link>
+        </div>
+      )}
+
+      {/* Comments List */}
+      {comments.length === 0 ? (
+        <div className="text-center py-12 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-700">
+          <p className="text-gray-500 dark:text-gray-400 text-lg">
+            No comments yet. Be the first to share your thoughts!
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
           {comments.map((comment) => (
-           <Comment
-           key={comment._id}
-           comment={comment}
-           onLike={handleLike}
-           onEdit={handleEdit}
-           onDelete={(commentId) => {
-             setShowModal(true);
-             setCommentToDelete(commentId);
-           }}
-         />
+            <Comment
+              key={comment._id}
+              comment={comment}
+              onLike={handleLike}
+              onEdit={handleEdit}
+              onDelete={(commentId) => {
+                setShowModal(true);
+                setCommentToDelete(commentId);
+              }}
+            />
           ))}
-        </>
+        </div>
       )}
       <Modal
         show={showModal}

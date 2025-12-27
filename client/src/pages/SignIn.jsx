@@ -46,7 +46,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 pt-24 lg:pt-28 pb-10">
       <div className="w-full max-w-md mx-auto bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-8 flex flex-col gap-6 animate-fade-in">
         <div className="flex flex-col items-center gap-2">
           <Link

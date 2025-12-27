@@ -13,7 +13,7 @@ const skills = [
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center py-10">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center pt-24 lg:pt-28 pb-10">
       <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl text-center flex flex-col gap-8">
         {/* Profile Section */}
         <div className="flex flex-col items-center gap-3">

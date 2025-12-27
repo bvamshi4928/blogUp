@@ -29,7 +29,7 @@ const projects = [
 
 const Projects = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 pt-24 lg:pt-28 pb-10">
       <div className="max-w-4xl mx-auto flex flex-col gap-10 p-4">
         <h1 className="text-4xl font-extrabold text-center text-teal-700 dark:text-teal-300 mb-2">
           Projects

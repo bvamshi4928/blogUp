@@ -35,20 +35,48 @@ export const getPosts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
-    const sortDirection = req.query.order === "asc" ? "1" : -1;
-    const posts = await Post.find({
+    
+    // Build search query for better partial matching
+    let searchQuery = {};
+    
+    // Handle searchTerm - search in title, content, category, and slug
+    // This will match any part of the heading or content
+    if (req.query.searchTerm && req.query.searchTerm.trim()) {
+      const searchTerm = req.query.searchTerm.trim();
+      // Escape special regex characters but allow partial word matching
+      const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      // Create regex pattern that matches the search term anywhere in the text
+      // This will match partial words, full words, or phrases
+      const searchPattern = escapedSearchTerm;
+      
+      searchQuery = {
+        $or: [
+          { title: { $regex: searchPattern, $options: "i" } },
+          { content: { $regex: searchPattern, $options: "i" } },
+          { category: { $regex: searchPattern, $options: "i" } },
+          { slug: { $regex: searchPattern, $options: "i" } },
+        ],
+      };
+    }
+    
+    // Build the complete query
+    const query = {
       ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.category && req.query.category !== 'uncategorized' && { 
+        category: { $regex: req.query.category, $options: "i" } 
+      }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
-      ...(req.query.searchTerm && {
-        $or: [
-          { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.searchTerm, $options: "i" } },
-        ],
-      }),
-    })
-      .sort({ updatedAt: sortDirection })
+      ...(Object.keys(searchQuery).length > 0 && searchQuery),
+    };
+    
+    // Determine sort field and direction - use sort parameter or default to desc
+    const sortParam = req.query.sort || req.query.order || "desc";
+    const sortField = sortParam === "asc" ? { createdAt: 1 } : { createdAt: -1 };
+    
+    const posts = await Post.find(query)
+      .sort(sortField)
       .skip(startIndex)
       .limit(limit);
 

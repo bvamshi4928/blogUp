@@ -49,93 +49,95 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     }
   };
   return (
-    <div className="flex p-4 border-b dark:border-gray-600 text-sm">
-      <div className="flex-shrink-0 mr-3">
-        <img
-          className="w-10 h-10 rounded-full bg-gray-200"
-          src={user.profilePicture}
-          alt={user.username}
-        />
-      </div>
-      <div className="flex-1">
-        <div className="flex items-center mb-1">
-          <span className="font-bold mr-1 text-xs truncate">
-            {user ? `@${user.username}` : "anonymous user"}
-          </span>
-          <span className="text-gray-500 text-xs">
-            {moment(comment.createdAt).fromNow()}
-          </span>
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-200 shadow-sm hover:shadow-md">
+      <div className="flex gap-4">
+        <div className="flex-shrink-0">
+          <img
+            className="w-12 h-12 rounded-full border-2 border-indigo-200 dark:border-indigo-800 object-cover"
+            src={user.profilePicture}
+            alt={user.username}
+          />
         </div>
-        {isEditing ? (
-          <>
-            <Textarea
-              className="mb-2"
-              value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-            />
-            <div className="flex justify-end gap-2 text-xs">
-              <Button
-                type="button"
-                size="sm"
-                gradientDuoTone="purpleToBlue"
-                onClick={handleSave}
-              >
-                Save
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                gradientDuoTone="purpleToBlue"
-                outline
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </Button>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="font-bold text-sm text-gray-900 dark:text-white">
+              {user ? `@${user.username}` : "anonymous user"}
+            </span>
+            <span className="text-gray-400 dark:text-gray-500 text-xs">
+              {moment(comment.createdAt).fromNow()}
+            </span>
+          </div>
+          
+          {isEditing ? (
+            <div className="space-y-3">
+              <Textarea
+                className="mb-2 bg-gray-50 dark:bg-slate-900 border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500"
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                rows="3"
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setIsEditing(false)}
+                  className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleSave}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                >
+                  Save
+                </Button>
+              </div>
             </div>
-          </>
-        ) : (
-          <>
-            <p className="text-gray-500 pb-2">{comment.content}</p>
-            <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">
-              <button
-                type="button"
-                onClick={() => onLike(comment._id)}
-                className={`text-gray-400 hover:text-blue-500 ${
-                  currentUser &&
-                  comment.likes.includes(currentUser._id) &&
-                  "!text-blue-500"
-                }`}
-              >
-                <FaThumbsUp className="text-sm" />
-              </button>
-              <p className="text-gray-400">
-                {comment.numberOfLikes > 0 &&
-                  comment.numberOfLikes +
-                    " " +
-                    (comment.numberOfLikes === 1 ? "like" : "likes")}
+          ) : (
+            <>
+              <p className="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+                {comment.content}
               </p>
-              {currentUser &&
-                (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleEdit}
-                      className="text-gray-400 hover:text-blue-500"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onDelete(comment._id)}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-            </div>
-          </>
-        )}
+              <div className="flex items-center gap-4 pt-3 border-t border-gray-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => onLike(comment._id)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 ${
+                    currentUser && comment.likes.includes(currentUser._id)
+                      ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
+                      : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  }`}
+                >
+                  <FaThumbsUp className="w-4 h-4" />
+                  <span className="text-sm font-medium">
+                    {comment.numberOfLikes > 0 ? comment.numberOfLikes : ""}
+                  </span>
+                </button>
+                {currentUser &&
+                  (currentUser._id === comment.userId || currentUser.isAdmin) && (
+                    <div className="flex items-center gap-2 ml-auto">
+                      <button
+                        type="button"
+                        onClick={handleEdit}
+                        className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all duration-200"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onDelete(comment._id)}
+                        className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
