@@ -29,6 +29,14 @@ const postSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    likes: {
+      type: [String],
+      default: [],
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,

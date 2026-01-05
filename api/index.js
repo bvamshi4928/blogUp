@@ -8,9 +8,10 @@ import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import postRoutes from "./routes/post.route.js";
 import commentRoutes from "./routes/comment.route.js";
+import interactionRoutes from "./routes/interaction.route.js";
+import { generateRSSFeed } from "./controllers/rss.controller.js";
 import cookieParser from "cookie-parser";
 import path from "path";
-
 
 dotenv.config();
 //connecting to database using mongoose
@@ -33,15 +34,19 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-app.use(cors({
-  origin: 'http://localhost:5173', // Your React/Vite port
-  credentials: true,               // Required for res.cookie() to work
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your React/Vite port
+    credentials: true, // Required for res.cookie() to work
+  })
+);
 //routes
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/interaction", interactionRoutes);
+app.get("/api/rss", generateRSSFeed);
 //middleware to handle error
 
 app.use(express.static(path.join(__dirname, "/client/dist")));

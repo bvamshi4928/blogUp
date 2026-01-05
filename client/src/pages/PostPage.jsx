@@ -1,11 +1,13 @@
-import { Button, Spinner } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
 import PostCard from "../components/PostCard";
+import ReadingProgress from "../components/ReadingProgress";
+import BookmarkButton from "../components/BookmarkButton";
+import LikeButton from "../components/LikeButton";
+import ShareButton from "../components/ShareButton";
 import { HiCalendar, HiClock, HiTag, HiArrowLeft } from "react-icons/hi";
-import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -14,10 +16,6 @@ export default function PostPage() {
   const [post, setPost] = useState(null);
   const [recentPosts, setRecentPosts] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState(null);
-
-  const [heroRef, heroVisible] = useScrollAnimation({ threshold: 0.1 });
-  const [contentRef, contentVisible] = useScrollAnimation({ threshold: 0.1 });
-  const [relatedRef, relatedVisible] = useScrollAnimation({ threshold: 0.1 });
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -48,7 +46,9 @@ export default function PostPage() {
       try {
         if (post) {
           // Fetch posts with same category, excluding current post
-          const res = await fetch(`/api/post/getposts?category=${post.category}&limit=3`);
+          const res = await fetch(
+            `/api/post/getposts?category=${post.category}&limit=3`
+          );
           const data = await res.json();
           if (res.ok) {
             // Filter out current post
@@ -70,7 +70,9 @@ export default function PostPage() {
         const data = await res.json();
         if (res.ok) {
           // Exclude current post
-          const filtered = data.posts.filter((p) => !post || p._id !== post._id);
+          const filtered = data.posts.filter(
+            (p) => !post || p._id !== post._id
+          );
           setRecentPosts(filtered.slice(0, 3));
         }
       } catch (error) {
@@ -121,6 +123,8 @@ export default function PostPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-20 lg:pt-24">
+      <ReadingProgress />
+
       {/* Back Button */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <Link
@@ -131,13 +135,10 @@ export default function PostPage() {
           <span>Back to Home</span>
         </Link>
       </div>
-
       {/* Hero Section */}
-      <article ref={heroRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <header className={`mb-8 transition-all duration-1000 ${
-          heroVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'
-        }`}>
+        <header className="mb-8">
           {/* Category Badge */}
           <div className="flex justify-center mb-6">
             <Link
@@ -159,7 +160,7 @@ export default function PostPage() {
           </h1>
 
           {/* Metadata */}
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
             <div className="flex items-center gap-2">
               <HiCalendar className="w-4 h-4" />
               <span>{formatDate(post.createdAt)}</span>
@@ -169,12 +170,35 @@ export default function PostPage() {
               <span>{calculateReadTime(post.content)} min read</span>
             </div>
           </div>
+
+          {/* Interaction Buttons */}
+          <div className="flex items-center justify-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-slate-700">
+            <LikeButton postId={post._id} size="lg" />
+            <BookmarkButton postId={post._id} size="lg" />
+            <ShareButton
+              postUrl={`/post/${post.slug}`}
+              postTitle={post.title}
+              size="lg"
+            />
+          </div>
+
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+              {post.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-full"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </header>
 
         {/* Featured Image */}
-        <div className={`mb-12 rounded-2xl overflow-hidden shadow-2xl transition-all duration-1000 ${
-          heroVisible ? 'opacity-100 scale-100' : 'opacity-100 scale-100'
-        }`}>
+        <div className="mb-12 rounded-2xl overflow-hidden shadow-2xl">
           <img
             src={post.image}
             alt={post.title}
@@ -183,45 +207,31 @@ export default function PostPage() {
         </div>
 
         {/* Content */}
-        <div
-          ref={contentRef}
-          className={`max-w-none mb-12 transition-all duration-1000 ${
-            contentVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'
-          }`}
-        >
+        <div className="max-w-none mb-12">
           <div
             className="post-content text-gray-900 dark:text-gray-100 leading-relaxed bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-slate-700"
-            style={{ color: 'inherit' }}
+            style={{ color: "inherit" }}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>
-
-        {/* Call to Action */}
-        <div className="mb-16">
-          <CallToAction />
-        </div>
       </article>
-
       {/* Comments Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-200 dark:border-slate-700">
           <CommentSection postId={post._id} />
         </div>
       </section>
-
       {/* Related Articles */}
-      {(relatedPosts && relatedPosts.length > 0) || (recentPosts && recentPosts.length > 0) ? (
-        <section
-          ref={relatedRef}
-          className={`bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm py-16 transition-all duration-1000 ${
-            relatedVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'
-          }`}
-        >
+      {(relatedPosts && relatedPosts.length > 0) ||
+      (recentPosts && recentPosts.length > 0) ? (
+        <section className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                  {relatedPosts && relatedPosts.length > 0 ? "Related Articles" : "Recent Articles"}
+                  {relatedPosts && relatedPosts.length > 0
+                    ? "Related Articles"
+                    : "Recent Articles"}
                 </span>
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -232,17 +242,14 @@ export default function PostPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(relatedPosts && relatedPosts.length > 0 ? relatedPosts : recentPosts)?.map(
-                (relatedPost, index) => (
-                  <div
-                    key={relatedPost._id}
-                    className="transform transition-all duration-500 hover:scale-105"
-                    style={{ transitionDelay: `${index * 100}ms` }}
-                  >
-                    <PostCard post={relatedPost} />
-                  </div>
-                )
-              )}
+              {(relatedPosts && relatedPosts.length > 0
+                ? relatedPosts
+                : recentPosts
+              )?.map((relatedPost) => (
+                <div key={relatedPost._id}>
+                  <PostCard post={relatedPost} />
+                </div>
+              ))}
             </div>
 
             <div className="text-center mt-12">

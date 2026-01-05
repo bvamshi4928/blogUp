@@ -10,20 +10,9 @@ import {
   AiOutlineBell,
   AiOutlinePlus,
 } from "react-icons/ai";
-import {
-  FaMoon,
-  FaSun,
-  FaUser,
-  FaSignOutAlt,
-  FaCog,
-  FaHome,
-  FaInfoCircle,
-  FaProjectDiagram,
-} from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
+import { FaMoon, FaSun, FaUser, FaSignOutAlt, FaCog } from "react-icons/fa";
 
 const Header = () => {
-  const path = useLocation().pathname;
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,21 +20,9 @@ const Header = () => {
   const { theme } = useSelector((state) => state.theme);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const searchRef = useRef(null);
   const userMenuRef = useRef(null);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Get search term from URL
   useEffect(() => {
@@ -91,38 +68,20 @@ const Header = () => {
       urlParams.set("searchTerm", searchTerm);
       const searchQuery = urlParams.toString();
       navigate(`/search?${searchQuery}`);
-      setIsSearchFocused(false);
       setIsMobileMenuOpen(false);
     }
   };
 
-  const navLinks = [
-    { name: "Home", path: "/", icon: FaHome },
-    { name: "About", path: "/about", icon: FaInfoCircle },
-    { name: "Projects", path: "/projects", icon: FaProjectDiagram },
-  ];
-
-  const isActive = (linkPath) => path === linkPath;
-
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-slate-700"
-          : "bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-slate-700/50"
-      }`}
-    >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 shadow-md border-b border-gray-200 dark:border-slate-700">
+      <nav className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 group flex-shrink-0"
-          >
-            <span className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-lg text-white font-bold text-lg sm:text-xl shadow-lg group-hover:shadow-xl transform group-hover:scale-105 transition-all duration-300">
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+            <span className="px-4 py-2 bg-indigo-600 rounded-xl text-white font-bold text-xl sm:text-2xl shadow-lg">
               Tech
             </span>
-            <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+            <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
               Blog
             </span>
           </Link>
@@ -130,30 +89,21 @@ const Header = () => {
           {/* Desktop Search Bar */}
           <form
             onSubmit={handleSubmit}
-            className="hidden md:flex flex-1 max-w-lg mx-8"
+            className="hidden md:flex flex-1 max-w-2xl mx-12"
           >
-            <div
-              className={`relative w-full transition-all duration-300 ${
-                isSearchFocused
-                  ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900"
-                  : ""
-              }`}
-            >
+            <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search articles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                ref={searchRef}
-                className="w-full px-4 py-2.5 pl-12 pr-4 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-slate-700 transition-all duration-200"
+                className="w-full px-5 py-3 pl-12 pr-24 rounded-xl bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 text-sm"
               />
-              <AiOutlineSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <AiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               {searchTerm && (
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
                 >
                   Search
                 </button>
@@ -161,33 +111,12 @@ const Header = () => {
             </div>
           </form>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
-                    isActive(link.path)
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {link.name}
-                </Link>
-              );
-            })}
-          </div>
-
           {/* Right Side Actions */}
-          <div className="flex items-center gap-2 lg:gap-3">
+          <div className="flex items-center gap-3 lg:gap-4">
             {/* Theme Toggle */}
             <button
               onClick={() => dispatch(toggleTheme())}
-              className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200 transform hover:scale-110"
+              className="p-3 rounded-xl bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700"
               aria-label="Toggle theme"
             >
               {theme === "light" ? (
@@ -200,11 +129,11 @@ const Header = () => {
             {/* Notifications (if logged in) */}
             {currentUser && (
               <button
-                className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200 transform hover:scale-110 relative"
+                className="p-3 rounded-xl bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 relative"
                 aria-label="Notifications"
               >
                 <AiOutlineBell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
             )}
 
@@ -212,9 +141,9 @@ const Header = () => {
             {currentUser?.isAdmin && (
               <Link
                 to="/create-post"
-                className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
+                className="hidden sm:flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700"
               >
-                <AiOutlinePlus className="w-4 h-4" />
+                <AiOutlinePlus className="w-5 h-5" />
                 <span className="hidden lg:inline">Create Post</span>
               </Link>
             )}
@@ -224,12 +153,12 @@ const Header = () => {
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-indigo-500 transition-all duration-200"
+                  className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-indigo-500"
                 >
                   <img
                     src={currentUser.profilePicture}
                     alt={currentUser.username}
-                    className="w-10 h-10 rounded-full border-2 border-indigo-500 object-cover"
+                    className="w-11 h-11 rounded-full border-2 border-indigo-500 object-cover shadow-md"
                   />
                 </button>
 
@@ -291,7 +220,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/sign-in"
-                className="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
+                className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700"
               >
                 Sign In
               </Link>
@@ -300,7 +229,7 @@ const Header = () => {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200"
+              className="md:hidden p-3 rounded-xl bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -314,52 +243,34 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-200 dark:border-slate-700 animate-slide-down">
+          <div className="md:hidden py-6 border-t border-gray-200 dark:border-slate-700 animate-slide-down">
             {/* Mobile Search */}
-            <form onSubmit={handleSubmit} className="mb-4">
+            <form onSubmit={handleSubmit} className="mb-6">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search articles..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2.5 pl-12 pr-4 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-5 py-3 pl-12 pr-4 rounded-xl bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 />
-                <AiOutlineSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <AiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               </div>
             </form>
 
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                      isActive(link.path)
-                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {link.name}
-                  </Link>
-                );
-              })}
-              {currentUser?.isAdmin && (
+            {/* Mobile Admin Actions */}
+            {currentUser?.isAdmin && (
+              <div className="mb-4">
                 <Link
                   to="/create-post"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                  className="flex items-center justify-center gap-3 px-5 py-3 rounded-xl font-semibold bg-indigo-600 text-white"
                 >
                   <AiOutlinePlus className="w-5 h-5" />
                   Create Post
                 </Link>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </nav>

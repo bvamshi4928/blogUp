@@ -35,21 +35,24 @@ export const getPosts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
-    
+
     // Build search query for better partial matching
     let searchQuery = {};
-    
+
     // Handle searchTerm - search in title, content, category, and slug
     // This will match any part of the heading or content
     if (req.query.searchTerm && req.query.searchTerm.trim()) {
       const searchTerm = req.query.searchTerm.trim();
       // Escape special regex characters but allow partial word matching
-      const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      
+      const escapedSearchTerm = searchTerm.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
+
       // Create regex pattern that matches the search term anywhere in the text
       // This will match partial words, full words, or phrases
       const searchPattern = escapedSearchTerm;
-      
+
       searchQuery = {
         $or: [
           { title: { $regex: searchPattern, $options: "i" } },
@@ -59,22 +62,24 @@ export const getPosts = async (req, res, next) => {
         ],
       };
     }
-    
+
     // Build the complete query
     const query = {
       ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.category && req.query.category !== 'uncategorized' && { 
-        category: { $regex: req.query.category, $options: "i" } 
-      }),
+      ...(req.query.category &&
+        req.query.category !== "uncategorized" && {
+          category: { $regex: req.query.category, $options: "i" },
+        }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
       ...(Object.keys(searchQuery).length > 0 && searchQuery),
     };
-    
+
     // Determine sort field and direction - use sort parameter or default to desc
     const sortParam = req.query.sort || req.query.order || "desc";
-    const sortField = sortParam === "asc" ? { createdAt: 1 } : { createdAt: -1 };
-    
+    const sortField =
+      sortParam === "asc" ? { createdAt: 1 } : { createdAt: -1 };
+
     const posts = await Post.find(query)
       .sort(sortField)
       .skip(startIndex)
@@ -131,6 +136,7 @@ export const updatepost = async (req, res, next) => {
           content: req.body.content,
           category: req.body.category,
           image: req.body.image,
+          tags: req.body.tags || [],
         },
       },
       { new: true }

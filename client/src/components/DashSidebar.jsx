@@ -6,7 +6,8 @@ import {
   HiOutlineUserGroup,
   HiAnnotation,
   HiChartPie,
-} from 'react-icons/hi';
+  HiBookmark,
+} from "react-icons/hi";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,17 +45,33 @@ const DashSidebar = ({ onClose }) => {
     <Sidebar className="w-full h-full">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
-        {currentUser && currentUser.isAdmin && (
-            <Link to='/dashboard?tab=dash' onClick={onClose}>
+          {/* Admin Dashboard */}
+          {currentUser && currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash" onClick={onClose}>
               <Sidebar.Item
-                active={tab === 'dash' || !tab}
+                active={tab === "dash" || !tab}
                 icon={HiChartPie}
-                as='div'
+                as="div"
               >
-                Dashboard
+                Analytics
               </Sidebar.Item>
             </Link>
           )}
+
+          {/* Normal User Overview */}
+          {currentUser && !currentUser.isAdmin && (
+            <Link to="/dashboard?tab=overview" onClick={onClose}>
+              <Sidebar.Item
+                active={tab === "overview" || !tab}
+                icon={HiChartPie}
+                as="div"
+              >
+                Overview
+              </Sidebar.Item>
+            </Link>
+          )}
+
+          {/* Profile - Everyone */}
           <Link to="/dashboard?tab=profile" onClick={onClose}>
             <Sidebar.Item
               active={tab === "profile"}
@@ -66,38 +83,49 @@ const DashSidebar = ({ onClose }) => {
               Profile
             </Sidebar.Item>
           </Link>
+
+          {/* Bookmarks - Everyone */}
+          <Link to="/dashboard?tab=bookmarks" onClick={onClose}>
+            <Sidebar.Item
+              active={tab === "bookmarks"}
+              icon={HiBookmark}
+              as="div"
+            >
+              Bookmarks
+            </Sidebar.Item>
+          </Link>
+
+          {/* Admin Only Sections */}
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=posts" onClick={onClose}>
-              <Sidebar.Item
-                active={tab === "posts"}
-                icon={HiDocumentText}
-                as="div"
-              >
-                Posts
-              </Sidebar.Item>
-            </Link>
-          )}
-           {currentUser.isAdmin && (
             <>
-            <Link to='/dashboard?tab=users' onClick={onClose}>
-              <Sidebar.Item
-                active={tab === 'users'}
-                icon={HiOutlineUserGroup}
-                as='div'
-              >
-                Users
-              </Sidebar.Item>
-            </Link>
-            <Link to='/dashboard?tab=comments' onClick={onClose}>
-              <Sidebar.Item
-                active={tab === 'comments'}
-                icon={HiAnnotation}
-                as='div'
-              >
-                Comments
-              </Sidebar.Item>
-            </Link>
-          </>
+              <Link to="/dashboard?tab=posts" onClick={onClose}>
+                <Sidebar.Item
+                  active={tab === "posts"}
+                  icon={HiDocumentText}
+                  as="div"
+                >
+                  Posts
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=users" onClick={onClose}>
+                <Sidebar.Item
+                  active={tab === "users"}
+                  icon={HiOutlineUserGroup}
+                  as="div"
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=comments" onClick={onClose}>
+                <Sidebar.Item
+                  active={tab === "comments"}
+                  icon={HiAnnotation}
+                  as="div"
+                >
+                  Comments
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <Sidebar.Item
             icon={HiArrowSmRight}

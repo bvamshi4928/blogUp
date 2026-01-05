@@ -20,6 +20,8 @@ const UpdatePost = () => {
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState([]);
   const { postId } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -37,6 +39,7 @@ const UpdatePost = () => {
         if (res.ok) {
           setPublishError(null);
           setFormData(data.posts[0]);
+          setTags(data.posts[0].tags || []);
         }
       };
       fetchPost();
@@ -81,6 +84,25 @@ const UpdatePost = () => {
       console.log(error);
     }
   };
+
+  const handleAddTag = (e) => {
+    if (e.key === "Enter" && tagInput.trim()) {
+      e.preventDefault();
+      if (!tags.includes(tagInput.trim()) && tags.length < 5) {
+        const newTags = [...tags, tagInput.trim()];
+        setTags(newTags);
+        setFormData({ ...formData, tags: newTags });
+        setTagInput("");
+      }
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(newTags);
+    setFormData({ ...formData, tags: newTags });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -137,6 +159,36 @@ const UpdatePost = () => {
             <option value="reactjs">React</option>
             <option value="nodejs">Nodejs</option>
           </Select>
+        </div>
+        {/* Tags Input */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Tags (Press Enter to add, max 5)
+          </label>
+          <TextInput
+            type="text"
+            placeholder="Add tags (e.g., javascript, react)"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleAddTag}
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm flex items-center gap-2"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveTag(tag)}
+                  className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
           <FileInput

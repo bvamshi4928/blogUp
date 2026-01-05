@@ -12,11 +12,9 @@ import {
   BsHeartFill,
 } from "react-icons/bs";
 import { HiSparkles, HiMail } from "react-icons/hi";
-import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 const FooterComp = () => {
   const [email, setEmail] = useState("");
-  const [footerRef, footerVisible] = useScrollAnimation({ threshold: 0.1 });
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
@@ -27,19 +25,49 @@ const FooterComp = () => {
   };
 
   const socialLinks = [
-    { icon: BsFacebook, href: "https://facebook.com", label: "Facebook", color: "hover:text-blue-600" },
-    { icon: BsInstagram, href: "https://instagram.com", label: "Instagram", color: "hover:text-pink-600" },
-    { icon: BsTwitter, href: "https://twitter.com", label: "Twitter", color: "hover:text-blue-400" },
-    { icon: BsGithub, href: "https://github.com", label: "GitHub", color: "hover:text-gray-800 dark:hover:text-gray-200" },
-    { icon: BsLinkedin, href: "https://linkedin.com", label: "LinkedIn", color: "hover:text-blue-700" },
-    { icon: BsYoutube, href: "https://youtube.com", label: "YouTube", color: "hover:text-red-600" },
+    {
+      icon: BsFacebook,
+      href: "https://facebook.com",
+      label: "Facebook",
+      color: "hover:text-blue-600",
+    },
+    {
+      icon: BsInstagram,
+      href: "https://instagram.com",
+      label: "Instagram",
+      color: "hover:text-pink-600",
+    },
+    {
+      icon: BsTwitter,
+      href: "https://twitter.com",
+      label: "Twitter",
+      color: "hover:text-blue-400",
+    },
+    {
+      icon: BsGithub,
+      href: "https://github.com",
+      label: "GitHub",
+      color: "hover:text-gray-800 dark:hover:text-gray-200",
+    },
+    {
+      icon: BsLinkedin,
+      href: "https://linkedin.com",
+      label: "LinkedIn",
+      color: "hover:text-blue-700",
+    },
+    {
+      icon: BsYoutube,
+      href: "https://youtube.com",
+      label: "YouTube",
+      color: "hover:text-red-600",
+    },
   ];
 
   const quickLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Projects", path: "/projects" },
     { name: "Search", path: "/search" },
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "RSS Feed", path: "/api/rss", external: true },
   ];
 
   const categories = [
@@ -59,12 +87,7 @@ const FooterComp = () => {
   ];
 
   return (
-    <footer
-      ref={footerRef}
-      className={`relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-gray-300 transition-all duration-1000 ${
-        footerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
+    <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-gray-300">
       {/* Decorative Top Border */}
       <div className="h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600"></div>
 
@@ -78,20 +101,18 @@ const FooterComp = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 mb-6 group"
-            >
+            <Link to="/" className="inline-flex items-center gap-2 mb-6 group">
               <span className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-lg text-white font-bold text-xl shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105">
                 Tech
               </span>
               <span className="text-2xl font-bold text-white">Blog</span>
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Your go-to destination for cutting-edge tech articles, tutorials, and insights. 
-              Join our community of passionate developers and tech enthusiasts.
+              Your go-to destination for cutting-edge tech articles, tutorials,
+              and insights. Join our community of passionate developers and tech
+              enthusiasts.
             </p>
-            
+
             {/* Social Media Icons */}
             <div className="flex flex-wrap gap-4">
               {socialLinks.map((social, index) => {
@@ -121,13 +142,25 @@ const FooterComp = () => {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
-                  >
-                    <BsArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-200" />
-                    <span>{link.name}</span>
-                  </Link>
+                  {link.external ? (
+                    <a
+                      href={link.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
+                    >
+                      <BsArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-200" />
+                      <span>{link.name}</span>
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
+                    >
+                      <BsArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-200" />
+                      <span>{link.name}</span>
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -161,7 +194,8 @@ const FooterComp = () => {
               Newsletter
             </h3>
             <p className="text-gray-400 mb-4 text-sm">
-              Subscribe to get the latest articles and tech updates delivered to your inbox.
+              Subscribe to get the latest articles and tech updates delivered to
+              your inbox.
             </p>
             <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <div className="flex gap-2">
@@ -194,12 +228,11 @@ const FooterComp = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Copyright */}
           <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-gray-400">
-            <p>
-              © {new Date().getFullYear()} Tech Blog. All rights reserved.
-            </p>
+            <p>© {new Date().getFullYear()} Tech Blog. All rights reserved.</p>
             <span className="hidden sm:inline">•</span>
             <p className="flex items-center gap-1">
-              Made with <BsHeartFill className="text-red-500 animate-pulse" /> by Vamshi
+              Made with <BsHeartFill className="text-red-500 animate-pulse" />{" "}
+              by Vamshi
             </p>
           </div>
 
